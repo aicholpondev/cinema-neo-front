@@ -1,0 +1,46 @@
+*{
+    margin: 0;
+    padding: 0;
+  background: black;
+  font-family: sans-serif;
+
+}
+a{
+    text-decoration-line: none;
+}
+.container{
+    width: 90%;
+    margin: 0 auto;
+}
+.header__nav{
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &--logo a{
+        color:white;
+        font-weight: 700;
+        font-size: 30px;
+    }
+    
+&--general{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+}
+&--general a{
+    font-weight: 600;
+    margin: 0.5rem;
+    color: white;  
+}
+&--search input{
+    border: 2px solid gray;
+    background: white;
+    border-radius: 1rem;
+    cursor: pointer;
+    padding: 10px 15px;
+   
+}
+
+}
