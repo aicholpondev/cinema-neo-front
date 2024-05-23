@@ -17,3 +17,39 @@ const movie = document.querySelector('.movie')
 //     .then(res => res.json())
 //     .then(json => console.log(json))
 //     .catch(err => console.log(err))
+getMovies(API_TOP_POPULAR)
+async function getMovies(url){
+    const response = await fetch(url,{
+        headers:{
+            'X-API-KEY':API_PERSONAL,
+            'Content-Type':'application/json',
+        },
+    });
+    const responseDATA = await response.json();
+    console.log(responseDATA);
+}
+
+function PopularMovies (data) {
+    const moviesEl = document.querySelector(".movies");
+
+    data.films.forEach((movie) =>{
+        const movieEl = document.createElement("div");
+        movieEl.classList.add("movie");
+        movieEl.innerHTML = `
+        <div class="movie_cover_inner">
+        <img
+        src="${movie.posterUrlReview}"
+        class="movie_cover"
+        alt="${movie.nameRu}"
+        />
+        <div class="movie_cover_back"></div>
+        </div>
+        <div class="movie_info">
+        <div class="movie_title">${movie.nameRu}</div>
+        <div class="movie_category">${movie.geners.map((genre) =>`${genre.genre}`)}</div>
+        <div class="movie_zero">9</div>
+        </div>
+        `;
+        moviesEl.appendChild(movieEl)
+    });
+}
