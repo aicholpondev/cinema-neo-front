@@ -53,3 +53,16 @@ function PopularMovies (data) {
         moviesEl.appendChild(movieEl)
     });
 }
+const form = document.querySelector("form");
+const search = document.querySelector("#search");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const apiSearchUrl = `${API_SEARCH}${search.value}`;
+  if (search.value) {
+    getMovies(apiSearchUrl);
+
+    search.value = "";
+  }
+});
