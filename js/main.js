@@ -80,7 +80,7 @@ function renderMovies (data) {
  
 document.getElementById("premiers-btn").addEventListener("click",  () =>{
      getMovies(API_PRIMERS);
-    // renderMovies(data);
+    renderMovies(data);
 });
 
 document.getElementById("up-comming-btn").addEventListener("click",() =>{
