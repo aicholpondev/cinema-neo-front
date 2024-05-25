@@ -41,4 +41,8 @@ a {
   border-radius: 1rem;
   cursor: pointer;
   padding: 10px 15px;
+}
+.movies{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }/*# sourceMappingURL=style.css.map */
