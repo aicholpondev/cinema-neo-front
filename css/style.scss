@@ -12,6 +12,7 @@ a{
 .container{
     width: 90%;
     margin: 0 auto;
+    
 }
 .header__nav{
     margin-top: 2rem;
@@ -30,7 +31,7 @@ a{
     justify-content: space-between;
     
 }
-&--general a{
+&--general a {
    
     font-weight: 800;
     margin: 0.5rem;

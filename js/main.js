@@ -20,10 +20,9 @@ async function getMovies(url){
   console.log(responseData);
   renderMovies(responseData)
   }catch(error){
-    console.error("Failed to fetch movies:", error);
+    console.error("error:", error);
   }
-  
-  // return responseDATA 
+   
 }
 
 
@@ -37,8 +36,9 @@ function getClassByRate(vote) {
       return "red";
     }
   }
+  getClassByRate()
 
-function renderMovies (data) {
+    function renderMovies (data) {
     const moviesEl = document.querySelector(".movies");
   
     const arrMovies = data.items || data.films || data.releases;
@@ -51,24 +51,22 @@ function renderMovies (data) {
         const rating = movie.rating || movie.ratingImdb;
 
         movieEl.innerHTML = `
-        <div class="movie_cover_inner">
+        <div class="movie_cover-inner">
         <img
         src="${movie.posterUrlPreview}"
         class="movie_cover"
         alt="${movie.nameRu}"
         />
-        <div class="movie_cover_back"></div>
+        <div class="movie_cover_dark"></div>
         </div>
         <div class="movie_info">
         <div class="movie_title">${movie.nameRu}</div>
         <div class="movie_category">${movie.genres.map((genre) =>`${genre.genre}`)}</div>
-        ${ movie.rating &&
-            `
-          <div class="movie__average movie__average--${getClassByRate(
+        ${ movie.rating && `<div class="movie__average movie__average--${getClassByRate(
             movie.rating
-          )}">${movie.rating}</div>
-          `
+          )}">${movie.rating}</div> `
           }
+          <div><ion-icon name="heart-outline"></ion-icon></div>
         </div>
           `;
         moviesEl.appendChild(movieEl)
@@ -78,12 +76,12 @@ function renderMovies (data) {
  
 document.getElementById("premiers-btn").addEventListener("click",  () =>{
      getMovies(API_PRIMERS);
-    renderMovies(data);
+    // renderMovies(data);
 });
 
 document.getElementById("up-comming-btn").addEventListener("click",() =>{
      getMovies(API_UP_COMMING)
-    // renderMovies(data.items)
+   
 });
 
 document.getElementById("top-popular-btn").addEventListener("click", () =>{
@@ -95,10 +93,15 @@ document.getElementById("relases-btn").addEventListener("click", () =>{
     
 });
 
+document.getElementById("favorites-btn").addEventListener("click", () =>{
+JSON.parse(localStorage.getItem("favorites"))
+renderMovies(data)
+})
+
 
 
 const form = document.querySelector("form");
-const search = document.querySelector("#search");
+const search = document.querySelector("search");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
