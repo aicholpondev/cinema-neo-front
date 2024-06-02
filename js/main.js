@@ -5,6 +5,10 @@ const API_PRIMERS ="https://kinopoiskapiunofficial.tech/api/v2.2/films/premieres
 const API_RELIEZ ="https://kinopoiskapiunofficial.tech/api/v2.1/films/releases?year=2024&month=JANUARY&page=1";
 const API_SEARCH="https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=keyword&page=1";
 const API_UP_COMMING ="https://kinopoiskapiunofficial.tech/api/v2.2/films/premieres?year=2024&month=JUNE";
+const LIKE = "https://kinopoiskapiunofficial.tech/api/v2.2/films/{id}"
+
+
+
 
 
 
@@ -20,23 +24,52 @@ async function getMovies(url){
   console.log(responseData);
   renderMovies(responseData)
   }catch(error){
-    console.error("error:", error);
+    console.log("error:", error);
   }
    
 }
 
 
-
 function getClassByRate(vote) {
-    if (vote >= 7) {
-      return "green";
-    } else if (vote > 5) {
-      return "orange";
-    } else {
-      return "red";
-    }
+  if (vote >= 7) {
+    return "green";
+  } else if (vote > 5) {
+    return "orange";
+  } else {
+    return "red";
   }
-  getClassByRate()
+}
+getClassByRate()
+
+async function fetchFavorites() {
+  let favoriteIds = JSON.parse(localStorage.getItem("likedMovies")) || [];
+ 
+
+
+  
+  for (let id of favoriteIds) {
+      try {
+          let response = await fetch(`https://kinopoiskapiunofficial.tech/api/v2.2/films/${id}`, {
+              headers: {
+                  'X-API-KEY': API_KEY,
+                  'Content-Type': 'application/json'
+              }
+          });
+
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          let movie = await response.json();
+          // showMovie(movie);
+      
+      } catch (error) {
+          console.log('Error fetching movie:', error);
+      }
+  }
+}
+  
+
 
     function renderMovies (data) {
     const moviesEl = document.querySelector(".movies");
@@ -50,30 +83,67 @@ function getClassByRate(vote) {
         movieEl.classList.add("movie");
         const rating = movie.rating || movie.ratingImdb;
 
+       
         movieEl.innerHTML = `
         <div class="movie_cover-inner">
         <img
         src="${movie.posterUrlPreview}"
-        class="movie_cover"
-        alt="${movie.nameRu}"
-        />
+        <div class="movie_cover"
+        alt="${movie.nameRu}"div/>
+        <div class="movie__rating ${getClassByRate(rating)}">${rating}</div>
         <div class="movie_cover_dark"></div>
         </div>
         <div class="movie_info">
         <div class="movie_title">${movie.nameRu}</div>
-        <div class="movie_category">${movie.genres.map((genre) =>`${genre.genre}`)}</div>
-        ${ movie.rating && `<div class="movie__average movie__average--${getClassByRate(
-            movie.rating
-          )}">${movie.rating}</div> `
+        <button class="like-btn" data-movie-id="${movie.kinopoiskId}" onclick="toggleMovieLike(this)">
+        <i class="fa-regular fa-heart"></i>
+    </button>
+        
+         
+      
           }
-          <div><ion-icon name="heart-outline"></ion-icon></div>
-        </div>
+          </div>
+          <div class="movie_category">${movie.genres.map((genre) =>`${genre.genre}`)}</div> 
+  
           `;
         moviesEl.appendChild(movieEl)
     });
 }
 
- 
+function toggleMovieLike(currLikeBtn) {
+  const movieId = currLikeBtn.getAttribute('data-movie-id');
+  let likedMovies = JSON.parse(localStorage.getItem('likedMovies')) || [];
+
+  if (likedMovies.includes(movieId)) {
+      likedMovies = likedMovies.filter(id => id !== movieId);
+      currLikeBtn.querySelector('i').style.color = "#FFFFFF";
+  } else {
+      likedMovies.unshift(movieId);
+      currLikeBtn.querySelector('i').style.color = "#FF0000";
+  }
+
+  localStorage.setItem('likedMovies', JSON.stringify(likedMovies));
+}
+
+function updateLikedMovies() {
+  const likedMovies = JSON.parse(localStorage.getItem('likedMovies')) || [];
+  const likeButtons = document.querySelectorAll('.like-btn');
+
+  likeButtons.forEach(button => {
+      const movieId = button.getAttribute('data-movie-id');
+      if (likedMovies.includes(movieId)) {
+          button.querySelector('i').style.color = "#FF0000";
+      }
+  });
+}
+
+const favoriteBtn = document.querySelector("#favorites-btn");
+favoriteBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  // const favoriteMovies = fetchFavorites();
+  getMovies(fetchFavorites, true);
+});
+
 document.getElementById("premiers-btn").addEventListener("click",  () =>{
      getMovies(API_PRIMERS);
     // renderMovies(data);
@@ -93,26 +163,23 @@ document.getElementById("relases-btn").addEventListener("click", () =>{
     
 });
 
-document.getElementById("favorites-btn").addEventListener("click", () =>{
-JSON.parse(localStorage.getItem("favorites"))
-renderMovies(data)
-})
 
 
-
-const form = document.querySelector("form");
+const form = document.querySelectorAll("form");
 const search = document.querySelector("search");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-
-  const apiSearchUrl = `${API_SEARCH}${search.value}`;
+  const SearchUrl = `${API_SEARCH}${search.value}`;
+  console.log(SearchUrl);
   if (search.value) {
-    getMovies(apiSearchUrl);
-
+    getMovies(SearchUrl);
     search.value = "";
+  } else {
+    alert("Please enter a movie name");
   }
 });
+
 
 
 
